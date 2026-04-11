@@ -43,7 +43,7 @@ shasum -a 256 eul.app.zip
 ```
 Expected:
 ```
-1c56b4d39ab3d0c5464a78ddde012317dbbe2c706533f2746e009743938419f0  eul.app.zip
+de4cd8b235f3e40279b1bde5d23b935d47e33d16269167654376080ea1a01e34  eul.app.zip
 ```
 
 ### Build from source
