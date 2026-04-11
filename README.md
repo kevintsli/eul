@@ -4,7 +4,19 @@
 
 # eul
 
+> **Actively maintained fork** of [gao-sun/eul](https://github.com/gao-sun/eul) with Xcode 26 / macOS compatibility fixes.
+> Maintained by [@kevintsli](https://github.com/kevintsli). Original project by [@gao-sun](https://github.com/gao-sun).
+
 ![Preview](https://user-images.githubusercontent.com/14722250/105626766-f718ab00-5e6c-11eb-9761-661ff85c8faf.jpg)
+
+## What's new in this fork (2026)
+
+- Fixed build compatibility with Xcode 26 and modern macOS
+- Disabled `ENABLE_USER_SCRIPT_SANDBOXING` to unblock the SwiftFormat build phase
+- Fixed `SDKROOT` resolution (was causing "invalid absolute path 'macosx'" error)
+- Replaced deprecated `kIOMainPortDefault` with availability-guarded fallback for macOS < 12
+- Refactored BluetoothStore to use modern APIs without deprecated IOBluetooth framework
+- Updated entitlements across all widget extensions
 
 ## Highlights
 
@@ -19,9 +31,44 @@ macOS 10.15 minimum for SwiftUI support
 
 ## Installation
 
-### Download
+### Download (this fork — Xcode 26 compatible)
 
-Download the [latest release](https://github.com/gao-sun/eul/releases/latest/download/eul.app.zip) directly and drag `.app` file into your `Application` folder.
+Download [eul.app.zip](https://github.com/kevintsli/eul/releases/latest/download/eul.app.zip) and drag `eul.app` into your `/Applications` folder.
+
+> Right-click → Open on first launch to bypass Gatekeeper for unsigned builds.
+
+#### Verify download integrity
+```bash
+shasum -a 256 eul.app.zip
+```
+Expected:
+```
+1c56b4d39ab3d0c5464a78ddde012317dbbe2c706533f2746e009743938419f0  eul.app.zip
+```
+
+### Build from source
+
+```bash
+xcodebuild -project eul.xcodeproj \
+  -scheme eul \
+  -configuration Release \
+  -derivedDataPath ~/Desktop/eul-build \
+  build
+```
+
+Then copy `~/Desktop/eul-build/Build/Products/Release/eul.app` to your `/Applications` folder.
+
+### Homebrew Cask (original release)
+
+```bash
+brew install --cask eul
+```
+
+### App Store (original release — outdated)
+
+Search `eul` or [click here](https://apps.apple.com/us/app/eul/id1537133867).
+
+Note: Some features are disabled and the version is out of date.
 
 ### Homebrew Cask
 
