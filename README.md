@@ -5,7 +5,7 @@
 # eul
 
 > **Actively maintained fork** of [gao-sun/eul](https://github.com/gao-sun/eul) with Xcode 26 / macOS compatibility fixes.
-> Maintained by [@kevintsli](https://github.com/kevintsli). Original project by [@gao-sun](https://github.com/gao-sun).
+> Full credits and original project by [@gao-sun](https://github.com/gao-sun).
 
 ![Preview](2026update.png)
 
