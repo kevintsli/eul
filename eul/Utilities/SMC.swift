@@ -304,13 +304,7 @@ public enum SMCKit {
     /// Open connection to the SMC driver. This must be done first before any
     /// other calls
     public static func open() throws {
-        let mainPort: mach_port_t
-        if #available(macOS 12.0, *) {
-            mainPort = kIOMainPortDefault
-        } else {
-            mainPort = kIOMasterPortDefault
-        }
-        let service = IOServiceGetMatchingService(mainPort,
+        let service = IOServiceGetMatchingService(kIOMainPortDefault,
                                                   IOServiceMatching("AppleSMC"))
 
         if service == 0 { throw SMCError.driverNotFound }

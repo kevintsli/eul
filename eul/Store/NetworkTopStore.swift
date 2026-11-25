@@ -43,6 +43,7 @@ class NetworkTopStore: ObservableObject {
     private var lastTimestamp: TimeInterval = Date().timeIntervalSince1970
     private var lastInBytes: [Int: Double] = [:]
     private var lastOutBytes: [Int: Double] = [:]
+    private var isWaitingForNettopOutput = false // main thread only
     @ObservedObject var preferenceStore = SharedStore.preference
     @Published var processes: [ProcessNetworkUsage] = []
 
@@ -58,7 +59,22 @@ class NetworkTopStore: ObservableObject {
     }
 
     private func run() {
-        guard let string = shell("nettop -L 1 -P -x -J bytes_in,bytes_out 2>/dev/null") else {
+        // nettop takes about 5 s, longer than the refresh interval; skip ticks while one is running.
+        guard !isWaitingForNettopOutput else { return }
+        isWaitingForNettopOutput = true
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            let nettopOutput = shell("nettop -L 1 -P -x -J bytes_in,bytes_out 2>/dev/null")
+            DispatchQueue.main.async {
+                self?.isWaitingForNettopOutput = false
+                self?.updateProcesses(fromNettopOutput: nettopOutput)
+            }
+        }
+    }
+
+    private func updateProcesses(fromNettopOutput nettopOutput: String?) {
+        // lastInBytes, lastOutBytes and lastTimestamp are also reset in update(shouldStart:); touch them only on main.
+        dispatchPrecondition(condition: .onQueue(.main))
+        guard let string = nettopOutput else {
             print("unable to fetch network activity, please make sure nettop is available")
             return
         }
@@ -133,9 +149,7 @@ class NetworkTopStore: ObservableObject {
         }
         .sorted(by: { $0.value.totalByte > $1.value.totalByte })
 
-        DispatchQueue.main.async {
-            self.processes = updated
-        }
+        processes = updated
     }
 
     func update(shouldStart: Bool) {
@@ -156,10 +170,7 @@ class NetworkTopStore: ObservableObject {
         processes = []
 
         let timer = Timer.scheduledTimer(withTimeInterval: Double(interval), repeats: true) { [weak self] _ in
-            // Run on a background thread — shell("nettop ...") is blocking
-            DispatchQueue.global(qos: .utility).async {
-                self?.run()
-            }
+            self?.run()
         }
         RunLoop.main.add(timer, forMode: .common)
         self.timer = timer

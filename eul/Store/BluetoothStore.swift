@@ -12,35 +12,37 @@ class BluetoothStore: ObservableObject {
     @Published var devices: [BluetoothDevice] = []
 
     func fetch() {
-        guard let data = shellData(["system_profiler SPBluetoothDataType -json"]) else {
-            devices = []
-            return
+        // system_profiler can take a while with many paired devices; keep it off the main thread.
+        DispatchQueue.global(qos: .utility).async { [self] in
+            let connectedDevices = Self.readConnectedDevices()
+            DispatchQueue.main.async { [self] in
+                devices = connectedDevices
+            }
         }
+    }
 
-        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+    private static func readConnectedDevices() -> [BluetoothDevice] {
+        guard let data = shellData(["system_profiler SPBluetoothDataType -json"]),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let btArray = json["SPBluetoothDataType"] as? [[String: Any]],
               let first = btArray.first,
               let connected = first["device_connected"] as? [[String: Any]]
-        else {
-            devices = []
-            return
-        }
+        else { return [] }
 
-        devices = connected.compactMap { dict -> BluetoothDevice? in
+        return connected.compactMap { dict -> BluetoothDevice? in
+            // [String: Any] so one non-string value does not drop the whole device.
             guard let entry = dict.first,
-                  let props = entry.value as? [String: String]
+                  let props = entry.value as? [String: Any],
+                  let address = props["device_address"] as? String
             else { return nil }
 
-            let name = entry.key
-            guard let address = props["device_address"] else { return nil }
-
             return BluetoothDevice(
-                name: name,
+                name: entry.key,
                 address: address,
-                batteryLevel: props["device_batteryLevelMain"],
-                batteryLevelLeft: props["device_batteryLevelLeft"],
-                batteryLevelRight: props["device_batteryLevelRight"],
-                batteryLevelCase: props["device_batteryLevelCase"]
+                batteryLevel: props["device_batteryLevelMain"] as? String,
+                batteryLevelLeft: props["device_batteryLevelLeft"] as? String,
+                batteryLevelRight: props["device_batteryLevelRight"] as? String,
+                batteryLevelCase: props["device_batteryLevelCase"] as? String
             )
         }
     }
