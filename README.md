@@ -7,14 +7,26 @@
 > **Actively maintained fork** of [gao-sun/eul](https://github.com/gao-sun/eul) with Xcode 26 / macOS compatibility fixes.
 > Full credits and original project by [@gao-sun](https://github.com/gao-sun).
 
-![Preview](2026update.png)
+![Preview](2026update2.png)
 
 ## What's new in this fork (2026)
+
+### v1.6.4 — 2026-11-25
+
+- Minimum macOS is now 12.0 (Xcode 27 supports only macOS 12 and later as deployment targets)
+- Fixed a crash when the menu shows the Network block (overlapping `nettop` runs)
+- Bluetooth: the device list loads in the background, and one unexpected value no longer hides a device
+- SMC: uses `kIOMainPortDefault` directly
+- Restored the upstream app group (`com.gaosun.eul.shared`)
+
+Thanks to [@BEgilson](https://github.com/BEgilson) for the review and for testing on macOS Golden Gate 27.2.1 with Xcode 27.2.
+
+### v1.6.3 — 2026-04-11
 
 - Fixed build compatibility with Xcode 26 and modern macOS
 - Disabled `ENABLE_USER_SCRIPT_SANDBOXING` to unblock the SwiftFormat build phase
 - Fixed `SDKROOT` resolution (was causing "invalid absolute path 'macosx'" error)
-- Replaced deprecated `kIOMainPortDefault` with availability-guarded fallback for macOS < 12
+- Replaced deprecated `kIOMasterPortDefault` with availability-guarded fallback for macOS < 12
 - Refactored BluetoothStore to use modern APIs without deprecated IOBluetooth framework
 - Updated entitlements across all widget extensions
 
@@ -27,7 +39,7 @@
 
 ## OS Requirement
 
-macOS 10.15 minimum for SwiftUI support
+macOS 12.0 or later
 
 ## Installation
 
@@ -35,7 +47,9 @@ macOS 10.15 minimum for SwiftUI support
 
 Download [eul.app.zip](https://github.com/kevintsli/eul/releases/latest/download/eul.app.zip) and drag `eul.app` into your `/Applications` folder.
 
-> Right-click → Open on first launch to bypass Gatekeeper for unsigned builds.
+> This build is not notarized, so macOS blocks it on first launch. Open **System Settings → Privacy & Security**, scroll down and click **Open Anyway** for eul.
+>
+> Widgets are not tested in this build.
 
 #### Verify download integrity
 ```bash
@@ -43,7 +57,7 @@ shasum -a 256 eul.app.zip
 ```
 Expected:
 ```
-de4cd8b235f3e40279b1bde5d23b935d47e33d16269167654376080ea1a01e34  eul.app.zip
+5e5b199cdf5676031cc6ac409be5c8850f04c7984bbac4e6cf2173abfe583603  eul.app.zip
 ```
 
 ### Build from source
@@ -53,7 +67,14 @@ xcodebuild -project eul.xcodeproj \
   -scheme eul \
   -configuration Release \
   -derivedDataPath ~/Desktop/eul-build \
-  build
+  CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= \
+  PROVISIONING_PROFILE_SPECIFIER= ENABLE_HARDENED_RUNTIME=NO \
+  clean build
+
+# Re-sign the Launch at Login helper, then the app (local signing)
+APP=~/Desktop/eul-build/Build/Products/Release/eul.app
+codesign --force --sign - "$APP/Contents/Library/LoginItems/LaunchAtLoginHelper.app"
+codesign --force --sign - --preserve-metadata=entitlements,flags "$APP"
 ```
 
 Then copy `~/Desktop/eul-build/Build/Products/Release/eul.app` to your `/Applications` folder.
