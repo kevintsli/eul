@@ -160,6 +160,8 @@ Note:
     <td align="center"><a href="https://github.com/sn0wmem0ry"><img src="https://avatars.githubusercontent.com/u/84455611?v=4?s=48" width="48px;" alt=""/><br /><sub><b>sn0wmem0ry</b></sub></a><br /><a href="#translation-sn0wmem0ry" title="Translation">🌍</a></td>
     <td align="center"><a href="https://github.com/daimajia"><img src="https://avatars.githubusercontent.com/u/2503423?v=4?s=48" width="48px;" alt=""/><br /><sub><b>代码家</b></sub></a><br /><a href="https://github.com/gao-sun/eul/commits?author=daimajia" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/bitigchi"><img src="https://avatars.githubusercontent.com/u/2769571?v=4?s=48" width="48px;" alt=""/><br /><sub><b>Emir Sarı</b></sub></a><br /><a href="#translation-bitigchi" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/kevintsli"><img src="https://avatars.githubusercontent.com/u/56401561?v=4?s=48" width="48px;" alt=""/><br /><sub><b>Kevin</b></sub></a><br /><a href="https://github.com/kevintsli/eul/commits?author=kevintsli" title="Code">💻</a> <a href="#maintenance-kevintsli" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://github.com/BEgilson"><img src="https://avatars.githubusercontent.com/u/57299882?v=4?s=48" width="48px;" alt=""/><br /><sub><b>Benóný Snær Egilson</b></sub></a><br /><a href="https://github.com/gao-sun/eul/pull/276" title="Reviewed Pull Requests">👀</a> <a href="#userTesting-BEgilson" title="User Testing">📓</a></td>
   </tr>
 </table>
 

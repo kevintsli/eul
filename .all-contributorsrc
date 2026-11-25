@@ -302,6 +302,26 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "kevintsli",
+      "name": "Kevin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56401561?v=4",
+      "profile": "https://github.com/kevintsli",
+      "contributions": [
+        "code",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "BEgilson",
+      "name": "Benóný Snær Egilson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57299882?v=4",
+      "profile": "https://github.com/BEgilson",
+      "contributions": [
+        "review",
+        "userTesting"
+      ]
     }
   ]
 }
